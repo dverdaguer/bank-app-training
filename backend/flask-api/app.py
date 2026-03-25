@@ -1,8 +1,9 @@
 from flask import request, jsonify, Flask
+from flask_cors import CORS
 import repository
 
-
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/')
 def index():
@@ -16,7 +17,6 @@ def get_users():
     for user in users:
         user.pop('_sa_instance_state', None)
     return jsonify(users)
-
 
 
 @app.route('/users/<int:user_id>', methods=['GET'])
@@ -78,16 +78,13 @@ def delete_user_route(user_id):
     except ValueError as e:
         return jsonify({'error': str(e)}), 404
 
-
-if __name__ == '__main__':
-	app.run(debug=True)
-
 # Login Route
 @app.route('/login', methods=['POST'])
 def login_route():
     data = request.get_json()
     email = data.get('email')
     password = data.get('password')
+    print(f"Login attempt for email: {email}")  # Debug log
     if not email or not password:
         return jsonify({'error': 'Email and password are required'}), 400
     try:
@@ -149,3 +146,6 @@ def account_transactions_route(account_id):
     for txn in txns:
         txn.pop('_sa_instance_state', None)
     return jsonify(txns)
+
+if __name__ == '__main__':
+	app.run(debug=True)

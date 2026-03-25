@@ -27,7 +27,7 @@ def create_user(name, email, password, role):
         db.rollback()
         db.close()
         raise ValueError('Email already exists')
-    result = {'user_id': user.user_id, 'name': user.name, 'email': user.email}
+    result = {'user_id': user.user_id, 'name': user.name, 'email': user.email, 'role': user.role}
     db.close()
     return result
 
@@ -54,7 +54,7 @@ def update_user(user_id, name, email, password=None, role=None):
    if role:
        user.role = role
    db.commit()
-   result = {'user_id': user.user_id, 'name': user.name, 'email': user.email}
+   result = {'user_id': user.user_id, 'name': user.name, 'email': user.email, 'role': user.role}
    db.close()
    return result
 
@@ -79,6 +79,8 @@ def patch_user(user_id, name=None, email=None, password=None, role=None):
       result['name'] = name
    if email is not None:
       result['email'] = email
+   if role is not None:
+      result['role'] = role
    db.close()
    return result
 

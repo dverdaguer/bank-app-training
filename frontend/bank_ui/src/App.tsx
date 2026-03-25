@@ -16,10 +16,11 @@ function App() {
     setLoading(true);
     try {
       const response = await axios.post(
-        "/login",
+        "http://127.0.0.1:5000/login",
         { email, password },
         { headers: { "Content-Type": "application/json" } },
       );
+
       if (response.status === 200) {
         setSuccess("Login successful!");
         // Store token or user info as needed (not shown for security)
