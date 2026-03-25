@@ -1,9 +1,17 @@
 from flask import request, jsonify, Flask
 from flask_cors import CORS
 import repository
+import jwt
+import datetime
+
 
 app = Flask(__name__)
 CORS(app)
+
+# JWT secret key (in production, use env var)
+JWT_SECRET = 'bankapp_secret'
+JWT_ALGORITHM = 'HS256'
+JWT_EXP_DELTA_SECONDS = 3600
 
 @app.route('/')
 def index():
@@ -78,6 +86,7 @@ def delete_user_route(user_id):
     except ValueError as e:
         return jsonify({'error': str(e)}), 404
 
+
 # Login Route
 @app.route('/login', methods=['POST'])
 def login_route():
@@ -89,7 +98,14 @@ def login_route():
         return jsonify({'error': 'Email and password are required'}), 400
     try:
         user = repository.login_user(email, password)
-        return jsonify(user), 200
+        payload = {
+            'user_id': user['user_id'],
+            'role': user['role'],
+            'name': user['name'],
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=JWT_EXP_DELTA_SECONDS)
+        }
+        token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
+        return jsonify({'token': token, 'user': {'user_id': user['user_id'], 'role': user['role'], 'name': user['name']}}), 200
     except ValueError as e:
         return jsonify({'error': str(e)}), 401
 
