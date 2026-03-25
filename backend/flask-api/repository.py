@@ -40,7 +40,7 @@ def login_user(email, password):
     else:
         raise ValueError('Invalid email or password')
 
-def update_user(user_id, name, email):
+def update_user(user_id, name, email, password=None, role=None):
    db = SessionLocal()
    user = db.query(User).filter(User.user_id == user_id).first()
    if not user:
@@ -48,12 +48,17 @@ def update_user(user_id, name, email):
       raise ValueError('User not found')
    user.name = name
    user.email = email
+   if password:
+       hashed_pw = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+       user.password = hashed_pw.decode('utf-8')
+   if role:
+       user.role = role
    db.commit()
    result = {'user_id': user.user_id, 'name': user.name, 'email': user.email}
    db.close()
    return result
 
-def patch_user(user_id, name=None, email=None):
+def patch_user(user_id, name=None, email=None, password=None, role=None):
    db = SessionLocal()
    user = db.query(User).filter(User.user_id == user_id).first()
    if not user:
@@ -63,6 +68,11 @@ def patch_user(user_id, name=None, email=None):
       user.name = name
    if email is not None:
       user.email = email
+   if password is not None:
+       hashed_pw = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+       user.password = hashed_pw.decode('utf-8')
+   if role is not None:
+       user.role = role
    db.commit()
    result = {'user_id': user.user_id}
    if name is not None:

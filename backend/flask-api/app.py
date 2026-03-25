@@ -33,10 +33,12 @@ def create_user():
     data = request.get_json()
     name = data.get('name')
     email = data.get('email')
-    if not name or not email:
-        return jsonify({'error': 'Name and email are required'}), 400
+    password = data.get('password')
+    role = data.get('role')
+    if not name or not email or not password or not role:
+        return jsonify({'error': 'Name, email, password, and role are required'}), 400
     try:
-        user = repository.create_user(name, email)
+        user = repository.create_user(name, email, password, role)
         return jsonify(user), 201
     except ValueError as e:
         return jsonify({'error': str(e)}), 409
@@ -46,10 +48,11 @@ def update_user_route(user_id):
     data = request.get_json()
     name = data.get('name')
     email = data.get('email')
-    if not name or not email:
-        return jsonify({'error': 'Name and email are required'}), 400
+    password = data.get('password')
+    if not name or not email or not password:
+        return jsonify({'error': 'Name, email, and password are required'}), 400
     try:
-        user = repository.update_user(user_id, name, email)
+        user = repository.update_user(user_id, name, email, password)
         return jsonify(user)
     except ValueError as e:
         return jsonify({'error': str(e)}), 404
