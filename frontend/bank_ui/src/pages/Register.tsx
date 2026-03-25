@@ -1,18 +1,18 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "../App.css";
-import { useNavigate } from "react-router-dom";
 
-type LoginProps = {
-  onLoginSuccess: () => void;
+type RegisterProps = {
+  onRegisterSuccess: () => void;
 };
 
-const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
+const Register: React.FC<RegisterProps> = ({ onRegisterSuccess }) => {
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [role, setRole] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,19 +20,27 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
     setLoading(true);
     try {
       const response = await axios.post(
-        "http://127.0.0.1:5000/login",
-        { email, password },
+        "http://127.0.0.1:5000/users",
+        { name, email, password, role },
         { headers: { "Content-Type": "application/json" } },
       );
-      if (response.status === 200) {
-        onLoginSuccess();
+      if (response.status === 201) {
+        // Automatically log in after registration
+        const loginResp = await axios.post(
+          "http://127.0.0.1:5000/login",
+          { email, password },
+          { headers: { "Content-Type": "application/json" } },
+        );
+        if (loginResp.status === 200) {
+          onRegisterSuccess();
+        }
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       if (err.response && err.response.data && err.response.data.error) {
         setError(err.response.data.error);
       } else {
-        setError("Login failed. Please try again.");
+        setError("Registration failed. Please try again.");
       }
     } finally {
       setLoading(false);
@@ -42,7 +50,15 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
   return (
     <div className="login-container">
       <form className="login-form" onSubmit={handleSubmit}>
-        <h2>Login</h2>
+        <h2>Create Account</h2>
+        <label htmlFor="name">Name</label>
+        <input
+          id="name"
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+        />
         <label htmlFor="email">Email</label>
         <input
           id="email"
@@ -52,6 +68,14 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
           required
           autoComplete="username"
         />
+        <label htmlFor="role">Role</label>
+        <input
+          id="role"
+          type="text"
+          value={role}
+          onChange={(e) => setRole(e.target.value)}
+          required
+        />
         <label htmlFor="password">Password</label>
         <input
           id="password"
@@ -59,32 +83,15 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          autoComplete="current-password"
+          autoComplete="new-password"
         />
         {error && <div className="error">{error}</div>}
         <button type="submit" disabled={loading}>
-          {loading ? "Logging in..." : "Login"}
+          {loading ? "Creating..." : "Create Account"}
         </button>
-        <div style={{ marginTop: 16, textAlign: "center" }}>
-          <span>Don't have an account? </span>
-          <button
-            type="button"
-            style={{
-              background: "none",
-              color: "#007bff",
-              border: "none",
-              cursor: "pointer",
-              textDecoration: "underline",
-              padding: 0,
-            }}
-            onClick={() => navigate("/register")}
-          >
-            Create one
-          </button>
-        </div>
       </form>
     </div>
   );
 };
 
-export default Login;
+export default Register;

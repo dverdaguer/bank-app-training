@@ -5,8 +5,10 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+
 import Login from "./pages/Login";
 import Home from "./pages/Home";
+import Register from "./pages/Register";
 
 const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -26,6 +28,16 @@ const App: React.FC = () => {
               <Navigate to="/" replace />
             ) : (
               <Login onLoginSuccess={handleLoginSuccess} />
+            )
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            isAuthenticated ? (
+              <Navigate to="/" replace />
+            ) : (
+              <Register onRegisterSuccess={handleLoginSuccess} />
             )
           }
         />
