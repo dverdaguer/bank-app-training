@@ -1,6 +1,7 @@
 from models import User, Account, Transaction
 from database import SessionLocal
 from sqlalchemy.exc import IntegrityError
+import bcrypt
 
 def get_all_users():
    db = SessionLocal()
@@ -14,20 +15,30 @@ def get_user(user_id):
    db.close()
    return user.__dict__ if user else None
 
-def create_user(name, email):
-   db = SessionLocal()
-   user = User(name=name, email=email)
-   db.add(user)
-   try:
-      db.commit()
-      db.refresh(user)
-   except IntegrityError:
-      db.rollback()
-      db.close()
-      raise ValueError('Email already exists')
-   result = {'user_id': user.user_id, 'name': user.name, 'email': user.email}
-   db.close()
-   return result
+def create_user(name, email, password, role):
+    db = SessionLocal()
+    hashed_pw = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+    user = User(name=name, email=email, password=hashed_pw.decode('utf-8'), role=role)
+    db.add(user)
+    try:
+        db.commit()
+        db.refresh(user)
+    except IntegrityError:
+        db.rollback()
+        db.close()
+        raise ValueError('Email already exists')
+    result = {'user_id': user.user_id, 'name': user.name, 'email': user.email}
+    db.close()
+    return result
+
+def login_user(email, password):
+    db = SessionLocal()
+    user = db.query(User).filter(User.email == email).first()
+    db.close()
+    if user and bcrypt.checkpw(password.encode('utf-8'), user.password.encode('utf-8')):
+        return {'user_id': user.user_id, 'name': user.name, 'email': user.email, 'role': user.role}
+    else:
+        raise ValueError('Invalid email or password')
 
 def update_user(user_id, name, email):
    db = SessionLocal()

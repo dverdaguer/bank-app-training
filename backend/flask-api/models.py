@@ -9,6 +9,8 @@ class User(Base):
    user_id = Column(Integer, primary_key=True, index=True)
    name = Column(String(100))
    email = Column(String(100), unique=True)
+   password = Column(String(255))  # New column for password
+   role = Column(String(50)) 
    created_at = Column(DateTime, server_default=func.now())
 
 class Account(Base):

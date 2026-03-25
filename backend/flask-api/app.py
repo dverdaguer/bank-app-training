@@ -1,6 +1,6 @@
-
 from flask import request, jsonify, Flask
 import repository
+
 
 app = Flask(__name__)
 
@@ -16,6 +16,8 @@ def get_users():
     for user in users:
         user.pop('_sa_instance_state', None)
     return jsonify(users)
+
+
 
 @app.route('/users/<int:user_id>', methods=['GET'])
 def get_user(user_id):
@@ -76,6 +78,20 @@ def delete_user_route(user_id):
 
 if __name__ == '__main__':
 	app.run(debug=True)
+
+# Login Route
+@app.route('/login', methods=['POST'])
+def login_route():
+    data = request.get_json()
+    email = data.get('email')
+    password = data.get('password')
+    if not email or not password:
+        return jsonify({'error': 'Email and password are required'}), 400
+    try:
+        user = repository.login_user(email, password)
+        return jsonify(user), 200
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 401
 
 # Create Account
 @app.route('/api/accounts', methods=['POST'])
