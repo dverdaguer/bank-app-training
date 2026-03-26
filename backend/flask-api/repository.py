@@ -105,11 +105,23 @@ def create_account(user_id, account_type):
    db.close()
    return result
 
-def get_account(account_id):
+def get_user_accounts(user_id):
    db = SessionLocal()
-   account = db.query(Account).filter(Account.account_id == account_id).first()
+   accounts = db.query(Account).filter(Account.user_id == user_id).all()
    db.close()
-   return account.__dict__ if account else None
+   return [account.__dict__ for account in accounts]
+
+def get_account(account_id):
+      db = SessionLocal()
+      account = db.query(Account).filter(Account.account_id == account_id).first()
+      if not account:
+         db.close()
+         return None
+      user = db.query(User).filter(User.user_id == account.user_id).first()
+      account_dict = account.__dict__.copy()
+      account_dict['userName'] = user.name if user else None
+      db.close()
+      return account_dict
 
 def deposit_money(account_id, amount):
    if not amount or amount <= 0:

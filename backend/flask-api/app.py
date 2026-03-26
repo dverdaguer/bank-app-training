@@ -122,6 +122,14 @@ def create_account_route():
         return jsonify(account), 201
     except Exception as e:
         return jsonify({'error': str(e)}), 400
+    
+# Get all accounts for a user
+@app.route('/api/users/<int:user_id>/accounts', methods=['GET'])
+def get_user_accounts_route(user_id):
+    accounts = repository.get_user_accounts(user_id)
+    for account in accounts:
+        account.pop('_sa_instance_state', None)
+    return jsonify(accounts)
 
 # Get Account Details
 @app.route('/api/accounts/<int:account_id>', methods=['GET'])
