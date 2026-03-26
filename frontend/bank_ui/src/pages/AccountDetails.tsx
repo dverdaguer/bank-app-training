@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import API_URL from "../utils/constants";
 
 interface Account {
   account_id: number;
@@ -27,7 +28,7 @@ const AccountDetails: React.FC = () => {
     if (!accountId) return;
     setLoading(true);
     axios
-      .get(`http://127.0.0.1:5000/api/accounts/${accountId}`)
+      .get(`${API_URL}/api/accounts/${accountId}`)
       .then((res) => {
         setAccount(res.data);
         setLoading(false);
@@ -43,17 +44,14 @@ const AccountDetails: React.FC = () => {
     setActionError("");
     setActionSuccess("");
     try {
-      await axios.post(
-        `http://127.0.0.1:5000/api/accounts/${accountId}/deposit`,
-        { amount: parseFloat(amount) },
-      );
+      await axios.post(`${API_URL}/api/accounts/${accountId}/deposit`, {
+        amount: parseFloat(amount),
+      });
       setActionSuccess("Deposit successful!");
       setShowDeposit(false);
       setAmount("");
       // Refresh account details
-      const res = await axios.get(
-        `http://127.0.0.1:5000/api/accounts/${accountId}`,
-      );
+      const res = await axios.get(`${API_URL}/api/accounts/${accountId}`);
       setAccount(res.data);
     } catch (err: any) {
       setActionError(err.response?.data?.error || "Deposit failed.");
@@ -67,17 +65,14 @@ const AccountDetails: React.FC = () => {
     setActionError("");
     setActionSuccess("");
     try {
-      await axios.post(
-        `http://127.0.0.1:5000/api/accounts/${accountId}/withdraw`,
-        { amount: parseFloat(amount) },
-      );
+      await axios.post(`${API_URL}/api/accounts/${accountId}/withdraw`, {
+        amount: parseFloat(amount),
+      });
       setActionSuccess("Withdrawal successful!");
       setShowWithdraw(false);
       setAmount("");
       // Refresh account details
-      const res = await axios.get(
-        `http://127.0.0.1:5000/api/accounts/${accountId}`,
-      );
+      const res = await axios.get(`${API_URL}/api/accounts/${accountId}`);
       setAccount(res.data);
     } catch (err: any) {
       setActionError(err.response?.data?.error || "Withdrawal failed.");

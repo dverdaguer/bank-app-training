@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Transactions.css";
+import API_URL from "../utils/constants";
 
 interface Transaction {
   txn_id: number;
@@ -22,7 +23,7 @@ const Transactions: React.FC = () => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true);
     axios
-      .get(`http://127.0.0.1:5000/api/accounts/${accountId}/transactions`)
+      .get(`${API_URL}/api/accounts/${accountId}/transactions`)
       .then((res) => {
         setTransactions(res.data);
         setLoading(false);

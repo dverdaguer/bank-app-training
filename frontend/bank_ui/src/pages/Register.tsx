@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "../App.css";
+import API_URL from "../utils/constants";
 
 type RegisterProps = {
   onRegisterSuccess: () => void;
@@ -20,14 +21,14 @@ const Register: React.FC<RegisterProps> = ({ onRegisterSuccess }) => {
     setLoading(true);
     try {
       const response = await axios.post(
-        "http://127.0.0.1:5000/users",
+        `${API_URL}/users`,
         { name, email, password, role },
         { headers: { "Content-Type": "application/json" } },
       );
       if (response.status === 201) {
         // Automatically log in after registration
         const loginResp = await axios.post(
-          "http://127.0.0.1:5000/login",
+          `${API_URL}/login`,
           { email, password },
           { headers: { "Content-Type": "application/json" } },
         );

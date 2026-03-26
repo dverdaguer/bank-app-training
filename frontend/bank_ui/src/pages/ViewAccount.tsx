@@ -3,6 +3,7 @@ import axios from "axios";
 import { getPayload } from "../utils/jwt";
 import { useNavigate } from "react-router-dom";
 import "./ViewAccount.css";
+import API_URL from "../utils/constants";
 
 interface Account {
   account_id: number;
@@ -26,7 +27,7 @@ const ViewAccount: React.FC = () => {
       return;
     }
     axios
-      .get(`http://127.0.0.1:5000/api/users/${payload.user_id}/accounts`)
+      .get(`${API_URL}/api/users/${payload.user_id}/accounts`)
       .then((res) => {
         setAccounts(res.data);
         setLoading(false);

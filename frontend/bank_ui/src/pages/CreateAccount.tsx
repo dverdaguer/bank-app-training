@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { getPayload } from "../utils/jwt";
+import API_URL from "../utils/constants";
 
 const CreateAccount: React.FC = () => {
   const [accountType, setAccountType] = useState("Checking");
@@ -31,11 +32,9 @@ const CreateAccount: React.FC = () => {
       if (isAdmin && email) {
         reqBody.email = email;
       }
-      const response = await axios.post(
-        "http://127.0.0.1:5000/api/accounts",
-        reqBody,
-        { headers: { "Content-Type": "application/json" } },
-      );
+      const response = await axios.post(`${API_URL}/api/accounts`, reqBody, {
+        headers: { "Content-Type": "application/json" },
+      });
       if (response.status === 201) {
         setMessage("Account created successfully!");
       } else {

@@ -3,6 +3,7 @@ import axios from "axios";
 import "../App.css";
 import { useNavigate } from "react-router-dom";
 import { setToken } from "../utils/jwt";
+import API_URL from "../utils/constants";
 
 type LoginProps = {
   onLoginSuccess: () => void;
@@ -21,7 +22,7 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
     setLoading(true);
     try {
       const response = await axios.post(
-        "http://127.0.0.1:5000/login",
+        `${API_URL}/login`,
         { email, password },
         { headers: { "Content-Type": "application/json" } },
       );
