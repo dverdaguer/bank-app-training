@@ -1,0 +1,33 @@
+.container {
+  max-width: 600px;
+  margin: 40px auto;
+}
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 20px;
+  background: #f9f9f9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.detailsButton {
+  padding: 8px 16px;
+  border-radius: 4px;
+  background: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.error {
+  color: red;
+}

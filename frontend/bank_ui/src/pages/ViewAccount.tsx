@@ -1,9 +1,71 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { getPayload } from "../utils/jwt";
+import { useNavigate } from "react-router-dom";
+import "./ViewAccount.css";
+
+interface Account {
+  account_id: number;
+  account_type: string;
+}
 
 const ViewAccount: React.FC = () => {
+  const [accounts, setAccounts] = useState<Account[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const payload = getPayload();
+    if (!payload || !payload.user_id) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setError("User not authenticated.");
+      setLoading(false);
+      return;
+    }
+    axios
+      .get(`http://127.0.0.1:5000/api/users/${payload.user_id}/accounts`)
+      .then((res) => {
+        setAccounts(res.data);
+        setLoading(false);
+      })
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      .catch((_err) => {
+        setError("Failed to fetch accounts.");
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <div>Loading accounts...</div>;
+  if (error) return <div className="error">{error}</div>;
+
   return (
-    <div>
-      {/* View Account Page */}
+    <div className="container">
+      <h2>Your Accounts</h2>
+      {accounts.length === 0 ? (
+        <div>No accounts found.</div>
+      ) : (
+        <div className="cards">
+          {accounts.map((account) => (
+            <div key={account.account_id} className="card">
+              <div>
+                <div>
+                  <strong>Account ID:</strong> {account.account_id}
+                </div>
+                <div>
+                  <strong>Type:</strong> {account.account_type}
+                </div>
+              </div>
+              <button
+                onClick={() => navigate(`/account/${account.account_id}`)}
+                className="detailsButton"
+              >
+                Account Details
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

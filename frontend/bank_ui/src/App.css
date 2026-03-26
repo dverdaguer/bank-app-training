@@ -1,4 +1,3 @@
-
 body, html {
   min-height: 100vh;
   margin: 0;
@@ -152,4 +151,23 @@ body, html {
     right: 0;
     border-right-color: var(--border);
   }
+}
+
+.home-root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #f5f6fa;
+}
+
+.home-user-info {
+  margin-bottom: 24px;
+}
+
+.home-actions {
+  margin-top: 32px;
+  display: flex;
+  gap: 16px;
 }
