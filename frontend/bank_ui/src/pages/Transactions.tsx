@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Transactions.css";
 
@@ -12,6 +12,7 @@ interface Transaction {
 
 const Transactions: React.FC = () => {
   const { accountId } = useParams<{ accountId: string }>();
+  const navigate = useNavigate();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -38,6 +39,12 @@ const Transactions: React.FC = () => {
   return (
     <div className="container">
       <h2>Transaction History</h2>
+      <button
+        style={{ marginBottom: 20 }}
+        onClick={() => navigate(`/account/${accountId}`)}
+      >
+        Back to Account Details
+      </button>
       {transactions.length === 0 ? (
         <div>No transactions found.</div>
       ) : (
