@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { getPayload, removeToken } from "../utils/jwt";
-import "./NavBar.module.css";
+import "./NavBar.css";
 
 const NavBar: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
   const navigate = useNavigate();
