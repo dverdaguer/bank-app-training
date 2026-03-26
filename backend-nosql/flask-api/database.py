@@ -1,8 +1,11 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from pymongo import MongoClient
+import os
+from dotenv import load_dotenv
 
-DATABASE_URL = "mysql+pymysql://root:dverdaguer@localhost:3306/bank_db"
+load_dotenv()
 
-engine = create_engine(DATABASE_URL)
+# MongoDB connection string from environment
+MONGO_URI = os.environ.get("MONGODB_URI")
 
-SessionLocal = sessionmaker(bind=engine)
+client = MongoClient(MONGO_URI)
+db = client.get_database("bankapp")

@@ -1,37 +1,36 @@
 from flask import request, jsonify, Flask
 from flask_cors import CORS
+
 import repository
 import jwt
 import datetime
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
 
-# JWT secret key (in production, use env var)
-JWT_SECRET = 'bankapp_secret'
+# JWT secret key from environment
+JWT_SECRET = os.environ.get('JWT_SECRET', 'bankapp_secret')
 JWT_ALGORITHM = 'HS256'
 JWT_EXP_DELTA_SECONDS = 3600
 
 @app.route('/')
 def index():
-    return 'Bank App Initialized with SQLAlchemy!'
+    return 'Bank App Initialized with MongoDB!'
 
 @app.route('/users', methods=['GET'])
 def get_users():
     users = repository.get_all_users()
-    
-    # Remove SQLAlchemy _sa_instance_state from dicts
-    for user in users:
-        user.pop('_sa_instance_state', None)
     return jsonify(users)
 
 
-@app.route('/users/<int:user_id>', methods=['GET'])
+@app.route('/users/<user_id>', methods=['GET'])
 def get_user(user_id):
     user = repository.get_user(user_id)
     if user:
-        user.pop('_sa_instance_state', None)
         return jsonify(user)
     else:
         return jsonify({'error': 'User not found'}), 404
@@ -51,7 +50,7 @@ def create_user():
     except ValueError as e:
         return jsonify({'error': str(e)}), 409
 
-@app.route('/users/<int:user_id>', methods=['PUT'])
+@app.route('/users/<user_id>', methods=['PUT'])
 def update_user_route(user_id):
     data = request.get_json()
     name = data.get('name')
@@ -65,7 +64,7 @@ def update_user_route(user_id):
     except ValueError as e:
         return jsonify({'error': str(e)}), 404
 
-@app.route('/users/<int:user_id>', methods=['PATCH'])
+@app.route('/users/<user_id>', methods=['PATCH'])
 def patch_user_route(user_id):
     data = request.get_json()
     name = data.get('name') if 'name' in data else None
@@ -78,7 +77,7 @@ def patch_user_route(user_id):
     except ValueError as e:
         return jsonify({'error': str(e)}), 404
 
-@app.route('/users/<int:user_id>', methods=['DELETE'])
+@app.route('/users/<user_id>', methods=['DELETE'])
 def delete_user_route(user_id):
     try:
         result = repository.delete_user(user_id)
@@ -124,25 +123,22 @@ def create_account_route():
         return jsonify({'error': str(e)}), 400
     
 # Get all accounts for a user
-@app.route('/api/users/<int:user_id>/accounts', methods=['GET'])
+@app.route('/api/users/<user_id>/accounts', methods=['GET'])
 def get_user_accounts_route(user_id):
     accounts = repository.get_user_accounts(user_id)
-    for account in accounts:
-        account.pop('_sa_instance_state', None)
     return jsonify(accounts)
 
 # Get Account Details
-@app.route('/api/accounts/<int:account_id>', methods=['GET'])
+@app.route('/api/accounts/<account_id>', methods=['GET'])
 def get_account_route(account_id):
     account = repository.get_account(account_id)
     if account:
-        account.pop('_sa_instance_state', None)
         return jsonify(account)
     else:
         return jsonify({'error': 'Account not found'}), 404
 
 # Deposit Money
-@app.route('/api/accounts/<int:account_id>/deposit', methods=['POST'])
+@app.route('/api/accounts/<account_id>/deposit', methods=['POST'])
 def deposit_money_route(account_id):
     data = request.get_json()
     amount = data.get('amount')
@@ -153,7 +149,7 @@ def deposit_money_route(account_id):
         return jsonify({'error': str(e)}), 400
 
 # Withdraw Money
-@app.route('/api/accounts/<int:account_id>/withdraw', methods=['POST'])
+@app.route('/api/accounts/<account_id>/withdraw', methods=['POST'])
 def withdraw_money_route(account_id):
     data = request.get_json()
     amount = data.get('amount')
@@ -164,11 +160,9 @@ def withdraw_money_route(account_id):
         return jsonify({'error': str(e)}), 400
 
 # Transaction History
-@app.route('/api/accounts/<int:account_id>/transactions', methods=['GET'])
+@app.route('/api/accounts/<account_id>/transactions', methods=['GET'])
 def account_transactions_route(account_id):
     txns = repository.account_transactions(account_id)
-    for txn in txns:
-        txn.pop('_sa_instance_state', None)
     return jsonify(txns)
 
 if __name__ == '__main__':
