@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/api/*": {"origins": "https://bank-app-training.vercel.app"}})
 
 # JWT secret key from environment
 JWT_SECRET = os.environ.get('JWT_SECRET', 'bankapp_secret')
