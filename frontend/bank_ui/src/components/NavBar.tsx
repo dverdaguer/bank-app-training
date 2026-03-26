@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { getPayload, removeToken } from "../utils/jwt";
-import styles from "./NavBar.module.css";
+import "./NavBar.module.css";
 
 const NavBar: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
   const navigate = useNavigate();
@@ -15,31 +15,28 @@ const NavBar: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
   };
 
   return (
-    <nav className={styles.navbar}>
-      <div className={styles.left}>
-        <span className={styles.logo}>Bank App</span>
+    <nav className="navbar">
+      <div className="left">
+        <span className="logo">Bank App</span>
       </div>
-      <div className={styles.center}>
-        <button className={styles.navButton} onClick={() => navigate("/")}>
+      <div className="center">
+        <button className="navButton" onClick={() => navigate("/")}>
           Home
         </button>
         <button
-          className={styles.navButton}
+          className="navButton"
           onClick={() => navigate("/create-account")}
         >
           Create Account
         </button>
-        <button
-          className={styles.navButton}
-          onClick={() => navigate("/view-account")}
-        >
+        <button className="navButton" onClick={() => navigate("/view-account")}>
           View Accounts
         </button>
       </div>
-      <div className={styles.right}>
-        <span className={styles.userName}>Welcome, {userName}</span>
+      <div className="right">
+        <span className="userName">Welcome, {userName}</span>
         <button
-          className={styles.navButton}
+          className="navButton"
           style={{ marginLeft: 16 }}
           onClick={handleLogout}
         >
