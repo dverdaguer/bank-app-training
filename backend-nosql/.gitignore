@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+.env
+.env.*
+*.env
+*.log
+instance/
+.webassets-cache
+# VS Code
+.vscode/
+# macOS
+.DS_Store
+# Node
+node_modules/
+# Migrations
+migrations/
+# Coverage
+htmlcov/
+.coverage
+.coverage.*
+.cache
+# Test
+*.pytest_cache/
+# Others
+*.bak
+*.swp
+*.swo
+*.orig
+*.egg-info/
