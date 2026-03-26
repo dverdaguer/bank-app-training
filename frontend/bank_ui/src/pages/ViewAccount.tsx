@@ -7,6 +7,8 @@ import "./ViewAccount.css";
 interface Account {
   account_id: number;
   account_type: string;
+  accountId?: number; // For compatibility with backend response
+  accountType?: string; // For compatibility with backend response
 }
 
 const ViewAccount: React.FC = () => {
@@ -50,14 +52,20 @@ const ViewAccount: React.FC = () => {
             <div key={account.account_id} className="card">
               <div>
                 <div>
-                  <strong>Account ID:</strong> {account.account_id}
+                  <strong>Account ID:</strong>{" "}
+                  {account.account_id || account.accountId}
                 </div>
                 <div>
-                  <strong>Type:</strong> {account.account_type}
+                  <strong>Type:</strong>{" "}
+                  {account.account_type || account.accountType}
                 </div>
               </div>
               <button
-                onClick={() => navigate(`/account/${account.account_id}`)}
+                onClick={() =>
+                  navigate(
+                    `/account/${account.account_id || account.accountId}`,
+                  )
+                }
                 className="detailsButton"
               >
                 Account Details

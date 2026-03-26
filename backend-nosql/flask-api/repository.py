@@ -92,19 +92,24 @@ def delete_user(user_id):
       raise ValueError('User not found')
    return {"result": "User deleted"}
 
-def create_account(user_id, account_type):
-   account_doc = {
-      "user_id": user_id,
-      "balance": 0.0,
-      "account_type": account_type,
-      "created_at": datetime.utcnow()
-   }
-   result = db["accounts"].insert_one(account_doc)
-   return {
-      "accountId": str(result.inserted_id),
-      "userId": user_id,
-      "accountType": account_type
-   }
+def create_account(user_id, account_type, email=None):
+    if email:
+        user = db["users"].find_one({"email": email})
+        if not user:
+            raise ValueError("No user found with the provided email")
+        user_id = str(user["_id"])
+    account_doc = {
+        "user_id": user_id,
+        "balance": 0.0,
+        "account_type": account_type,
+        "created_at": datetime.utcnow()
+    }
+    result = db["accounts"].insert_one(account_doc)
+    return {
+        "accountId": str(result.inserted_id),
+        "userId": user_id,
+        "accountType": account_type
+    }
 
 def get_user_accounts(user_id):
    accounts = list(db["accounts"].find({"user_id": user_id}))

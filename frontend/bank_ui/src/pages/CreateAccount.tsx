@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
 import axios from "axios";
 import { getPayload } from "../utils/jwt";
@@ -7,25 +8,32 @@ const CreateAccount: React.FC = () => {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("");
+
+  const payload = getPayload();
+  const isAdmin = payload?.role === "Admin";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setMessage("");
     setError("");
     setLoading(true);
-    const payload = getPayload();
     if (!payload || !payload.user_id) {
       setError("User not authenticated.");
       setLoading(false);
       return;
     }
     try {
+      const reqBody: any = {
+        userId: payload.user_id,
+        accountType,
+      };
+      if (isAdmin && email) {
+        reqBody.email = email;
+      }
       const response = await axios.post(
         "http://127.0.0.1:5000/api/accounts",
-        {
-          userId: payload.user_id,
-          accountType,
-        },
+        reqBody,
         { headers: { "Content-Type": "application/json" } },
       );
       if (response.status === 201) {
@@ -33,7 +41,6 @@ const CreateAccount: React.FC = () => {
       } else {
         setError("Failed to create account.");
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.response?.data?.error || "Failed to create account.");
     } finally {
@@ -55,6 +62,19 @@ const CreateAccount: React.FC = () => {
           <option value="Checking">Checking</option>
           <option value="Savings">Savings</option>
         </select>
+        {isAdmin && (
+          <>
+            <label htmlFor="email">User Email (optional)</label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter user email for account (optional)"
+              style={{ display: "block", width: "100%", marginBottom: 16 }}
+            />
+          </>
+        )}
         <button type="submit" disabled={loading} style={{ width: "100%" }}>
           {loading ? "Creating..." : "Create Account"}
         </button>

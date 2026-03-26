@@ -114,10 +114,11 @@ def create_account_route():
     data = request.get_json()
     user_id = data.get('userId')
     account_type = data.get('accountType')
+    email = data.get('email', None)
     if not user_id or not account_type:
         return jsonify({'error': 'userId and accountType are required'}), 400
     try:
-        account = repository.create_account(user_id, account_type)
+        account = repository.create_account(user_id, account_type, email)
         return jsonify(account), 201
     except Exception as e:
         return jsonify({'error': str(e)}), 400

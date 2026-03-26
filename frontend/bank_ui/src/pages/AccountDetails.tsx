@@ -7,6 +7,7 @@ interface Account {
   account_id: number;
   userName: string;
   balance: number;
+  accountId?: number; // For compatibility with backend response
 }
 
 const AccountDetails: React.FC = () => {
@@ -93,7 +94,7 @@ const AccountDetails: React.FC = () => {
     <div style={{ maxWidth: 500, margin: "40px auto" }}>
       <h2>Account Details</h2>
       <div style={{ marginBottom: 16 }}>
-        <strong>Account ID:</strong> {account.account_id}
+        <strong>Account ID:</strong> {account.account_id || account.accountId}
       </div>
       <div style={{ marginBottom: 16 }}>
         <strong>User Name:</strong> {account.userName}
@@ -101,7 +102,14 @@ const AccountDetails: React.FC = () => {
       <div style={{ marginBottom: 16 }}>
         <strong>Current Balance:</strong> ${Number(account.balance).toFixed(2)}
       </div>
-      <div style={{ display: "flex", gap: 16, marginBottom: 24 }}>
+      <div
+        style={{
+          display: "flex",
+          gap: 16,
+          marginBottom: 24,
+          justifyContent: "space-between",
+        }}
+      >
         <button
           onClick={() => {
             setShowDeposit((v) => !v);
@@ -122,7 +130,11 @@ const AccountDetails: React.FC = () => {
         >
           Make Withdrawal
         </button>
-        <button onClick={() => navigate(`/transactions/${account.account_id}`)}>
+        <button
+          onClick={() =>
+            navigate(`/transactions/${account.account_id || account.accountId}`)
+          }
+        >
           View Transactions
         </button>
       </div>
