@@ -1,6 +1,5 @@
 from flask import request, jsonify, Flask
 from flask_cors import CORS
-
 import repository
 import jwt
 import datetime
@@ -167,4 +166,4 @@ def account_transactions_route(account_id):
     return jsonify(txns)
 
 if __name__ == '__main__':
-	app.run(debug=True)
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=False)
