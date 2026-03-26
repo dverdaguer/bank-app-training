@@ -32,7 +32,9 @@ body, html {
 }
 
 .login-form input[type="email"],
-.login-form input[type="password"] {
+.login-form input[type="password"],
+.login-form input[type="text"],
+.login-form input[type="number"] {
   width: 100%;
   padding: 8px;
   border-radius: 4px;

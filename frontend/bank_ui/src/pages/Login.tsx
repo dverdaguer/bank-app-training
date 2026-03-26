@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import "../App.css";
 import { useNavigate } from "react-router-dom";
+import { setToken } from "../utils/jwt";
 
 type LoginProps = {
   onLoginSuccess: () => void;
@@ -25,6 +26,8 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
         { headers: { "Content-Type": "application/json" } },
       );
       if (response.status === 200) {
+        const { token } = response.data;
+        setToken(token);
         onLoginSuccess();
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

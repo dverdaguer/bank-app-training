@@ -69,13 +69,18 @@ const Register: React.FC<RegisterProps> = ({ onRegisterSuccess }) => {
           autoComplete="username"
         />
         <label htmlFor="role">Role</label>
-        <input
+        <select
           id="role"
-          type="text"
           value={role}
           onChange={(e) => setRole(e.target.value)}
           required
-        />
+        >
+          <option value="" disabled>
+            Select role
+          </option>
+          <option value="Admin">Admin</option>
+          <option value="User">User</option>
+        </select>
         <label htmlFor="password">Password</label>
         <input
           id="password"

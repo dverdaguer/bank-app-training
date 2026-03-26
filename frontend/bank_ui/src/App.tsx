@@ -9,9 +9,18 @@ import {
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import Register from "./pages/Register";
+import CreateAccount from "./pages/CreateAccount";
+import ViewAccount from "./pages/ViewAccount";
+import { getToken } from "./utils/jwt";
 
 const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  React.useEffect(() => {
+    if (getToken()) {
+      setIsAuthenticated(true);
+    }
+  }, []);
 
   // Handler to be passed to Login page
   const handleLoginSuccess = () => {
@@ -45,6 +54,22 @@ const App: React.FC = () => {
           path="/"
           element={
             isAuthenticated ? <Home /> : <Navigate to="/login" replace />
+          }
+        />
+        <Route
+          path="/create-account"
+          element={
+            isAuthenticated ? (
+              <CreateAccount />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+        <Route
+          path="/view-account"
+          element={
+            isAuthenticated ? <ViewAccount /> : <Navigate to="/login" replace />
           }
         />
       </Routes>
