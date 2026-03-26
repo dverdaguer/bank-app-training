@@ -166,4 +166,4 @@ def account_transactions_route(account_id):
     return jsonify(txns)
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 443)), debug=False, ssl_context=("certificate.pem", "key.pem"))
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8443)), debug=False, ssl_context=("certificate.pem", "key.pem"))
